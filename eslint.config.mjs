@@ -1,3 +1,7 @@
+// @ts-check
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
@@ -6,12 +10,13 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: true,
+        // @ts-ignore
         tsconfigRootDir: import.meta.name,
       },
     },
   },
   {
-    files: ['**/*.js'],
+    files: ['src/**/*.ts'],
     ...tseslint.configs.disableTypeChecked,
   },
   {
