@@ -2,6 +2,6 @@
   "*.ts": [
     "eslint 'src/**' --fix", 
     "prettier --write",
-    "npm run test --coverage --findRelatedTests"
+    "npm run test:staged"
   ]
 }
