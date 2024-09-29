@@ -28,7 +28,7 @@ export class SignUpController implements Controller {
         return badRequest(new InvalidParamError('email'));
       }
     } catch (error) {
-      return serverError(new ServerError());
+      return serverError();
     }
   }
 }
