@@ -1,0 +1,23 @@
+import { DbAddAccount } from './db-add-account';
+
+class EncrypterStub {
+  async encrypt(value: string): Promise<string> {
+    // simulando um retorno async
+    return new Promise((resolve) => resolve('hashed_password'));
+  }
+}
+
+describe('DbAddAccount Usecase', () => {
+  it('Should call Encripter with correct password', () => {
+    const encrypterStub = new EncrypterStub();
+    const sut = new DbAddAccount(encrypterStub);
+    const encryptSpy = jest.spyOn(encrypterStub, 'encrypt');
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email@mail.com',
+      password: 'valid_password',
+    };
+    sut.add(accountData);
+    expect(encryptSpy).toHaveBeenCalledWith('valid_password');
+  });
+});
