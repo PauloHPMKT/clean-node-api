@@ -1,4 +1,4 @@
-import { EmailValidatorAdapter } from './email-validator';
+import { EmailValidatorAdapter } from './email-validator-adapter';
 import validator from 'validator';
 
 // Para validar um email, o método isEmail do pacote validator deve retornar true
