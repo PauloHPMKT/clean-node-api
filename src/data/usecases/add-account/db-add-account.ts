@@ -25,6 +25,6 @@ export class DbAddAccount implements AddAccount {
      *
      * O parametro {} garante que o objeto alterado será uma copia, no caso, o accountData
      */
-    return new Promise((resolve) => resolve(account));
+    return account;
   }
 }
