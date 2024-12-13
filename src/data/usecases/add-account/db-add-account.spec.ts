@@ -17,6 +17,15 @@ const makeEncrypter = (): Encrypter => {
 
 const makeAddAccountRepository = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {
+    /**
+     * Nesse caso a camada de infra com o Repositorio esta enxergando o model
+     * que é um objeto de dominio, isso é um problema pois a camada de infra
+     * não pode enxergar a camada de dominio, para resolver isso, o model deve ser
+     * Nesse caso a opção seria replicar o model para a camada de infra
+     *
+     * Porém optamos manter para verificar o comportamento da implementação
+     *
+     */
     async add(accountData: AddAccountModel): Promise<AccountModel> {
       const fakeAccount = {
         id: 'valid_id',
@@ -64,6 +73,7 @@ describe('DbAddAccount Usecase', () => {
     const { sut, encrypterStub } = makeSut();
     // por ser async tem que passar uma new Promise
     // colocar um try catch nessa implementaçao pode impedir que a exceçao seja lançada para a camada de presentation
+    // nesse caso quando qualquer erro que acontecer em qualquer dependencia sera tratado no conrtoller
     jest
       .spyOn(encrypterStub, 'encrypt')
       .mockReturnValueOnce(
@@ -74,7 +84,7 @@ describe('DbAddAccount Usecase', () => {
       email: 'valid_email@mail.com',
       password: 'valid_password',
     };
-    const promise = sut.add(accountData);
+    const promise = sut.add(accountData); // aplica sem alwait para que o erro seja capturado
     await expect(promise).rejects.toThrow();
   });
 
@@ -92,5 +102,21 @@ describe('DbAddAccount Usecase', () => {
       email: 'valid_email@mail.com',
       password: 'hashed_password',
     });
+  });
+
+  it('Should throw if AddAccountRepository thorws', async () => {
+    const { sut, addAccountRepositoryStub } = makeSut();
+    jest
+      .spyOn(addAccountRepositoryStub, 'add')
+      .mockReturnValueOnce(
+        new Promise((resolve, reject) => reject(new Error())),
+      );
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email@mail.com',
+      password: 'rashed_password',
+    };
+    const promise = sut.add(accountData);
+    await expect(promise).rejects.toThrow();
   });
 });
